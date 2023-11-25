@@ -7,6 +7,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: api99/docker-react:latest
+      credentials:
+        username: ${{ secrets.DOCKER_USERNAME}}
+        password: ${{ secrets.DOCKER_PASSWORD}}
     steps:
       - uses: actions/checkout@v3
       - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
@@ -30,7 +35,7 @@ jobs:
         run: zip -r deploy.zip . -x '*.git*'
 
       - name: Deploy to EB
-        uses: docker://api99/docker-react@latest
+        uses: einaregilsson/beanstalk-deploy@v14 # custom github action, don't change
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
           aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
